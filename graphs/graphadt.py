@@ -1,4 +1,113 @@
+from collections import deque
+
+
 class Graph:
+
+    def __init__(self, directed=False):
+        self.outgoing = {}
+        self.incoming = {} if directed else self.outgoing
+
+    def isDirected(self):
+        return self.outgoing is not self.incoming
+
+    def vertexCount(self):
+        return len(self.outgoing)
+
+    def vertices(self):
+        return self.outgoing.keys()
+
+    def edgeCount(self):
+        total = 0
+        for i in self.outgoing:
+            total += len(self.outgoing[i])
+        return total if self.isDirected else total//2
+
+    def degree(self, v, outgoing=True):
+        if outgoing:
+            return len(self.outgoing[v])
+        return len(self.incoming[v])
+
+    def edges(self):
+        edgeset = set()
+        for i in self.outgoing.values():
+            edgeset.update(i.values())
+        return edgeset
+
+    def getEdge(self, u, v):
+        incident = self.outgoing.get(u)
+        if incident:
+            return incident.get(v)
+
+    def incidentEdges(self, v, outgoing=True):
+        adj = self.outgoing[v] if outgoing else self.incoming[v]
+
+        for edge in adj.values():
+            yield edge
+
+    def insertVertex(self, x=None):
+        vertex = self.Vertex(x)
+        self.outgoing[vertex] = {}
+        if self.isDirected():
+            self.incoming[vertex] = {}
+        return vertex
+
+    def insertEdge(self, u, v, x=None):
+        edge = self.Edge(u, v, x)
+        self.outgoing[u][v] = edge
+        self.incoming[v][u] = edge
+
+    def removeVertex(self, v):
+        outgoingv = self.outgoing[v]
+        for i in outgoingv:
+            del self.incoming[i][v]
+        del outgoingv
+
+    def removeEdge(self, e):
+        origin, destination = e.endpoints()
+        del self.outgoing[origin][destination]
+        del self.incoming[destination][origin]
+
+    def dfs(self, u, discovered):
+
+        for e in self.incidentEdges(u):
+            v = e.opposite(u)
+            if v not in discovered:
+                discovered[v] = e
+                self.dfs(v, discovered)
+
+    def isConnected(self, u, v, discovered):
+        path = []
+        if v in discovered:
+            path.append(v)
+            walk = v
+            while walk is not u:
+                e = discovered[walk]
+                parent = e.opposite(walk)
+                path.append(parent)
+                walk = parent
+            path.reverse()
+        return path
+
+    def dfsComplete(self):
+        forest = {}
+        for u in self.vertices():
+            if u not in forest:
+                forest[u] = None
+                self.dfs(u, forest)
+
+        return forest
+
+    def bfs(self, u, discovered):
+        q = deque()
+        q.append(u)
+
+        while len(q) > 0:
+            v = q.popleft()
+            for e in self.incidentEdges(v):
+                opp = e.opposite(v)
+                if opp not in discovered:
+                    discovered[opp] = e
+                    q.append(opp)
 
     class Vertex:
         __slots__ = "_element"
@@ -26,7 +135,7 @@ class Graph:
         def endPoints(self):
             return (self._origin, self._destination)
 
-        def opposie(self, v):
+        def opposite(self, v):
             return self._origin if v is self._destination else self._origin
 
         def __hash__(self):
