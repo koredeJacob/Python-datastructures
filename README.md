@@ -1,1 +1,1 @@
-a repository on the datastructures and algorithms i will be learning in python
+a repository on the datastructures and algorithms i will be learning in python.

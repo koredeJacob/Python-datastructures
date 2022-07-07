@@ -1,4 +1,5 @@
 from collections import deque
+from copy import deepcopy
 
 
 class Graph:
@@ -108,6 +109,41 @@ class Graph:
                 if opp not in discovered:
                     discovered[opp] = e
                     q.append(opp)
+
+    def floydWarshall(self):
+        closure = deepcopy(self)
+        verts = list(self.vertices())
+        n = len(verts)
+
+        for k in range(n):
+            for i in range(n):
+                if i != k and closure.getEdge(verts[i], verts[k]) is not None:
+                    for j in range(n):
+                        if i != j != k and closure.get_edge(verts[k], verts[j]) is not None:
+
+                            if closure.getEdge(verts[i], verts[j]) is None:
+                                closure.insertEdge(verts[i], verts[j])
+        return closure
+
+    def topologicalSort(self):
+        topo = []
+        ready = []
+        incount = {}
+
+        for v in self.vertices():
+            incount[v] = self.degree(v, False)
+            if incount[v] == 0:
+                ready.append(v)
+
+        while len(ready) > 0:
+            u = ready.pop()
+            for e in self.incidentEdges(u):
+                v = e.opposite(u)
+                incount[v] -= 1
+                if incount[v] == 0:
+                    ready.append(v)
+            topo.append(u)
+        return topo
 
     class Vertex:
         __slots__ = "_element"
