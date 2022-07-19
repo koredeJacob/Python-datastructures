@@ -145,34 +145,123 @@ class Graph:
             topo.append(u)
         return topo
 
-    class Vertex:
-        __slots__ = "_element"
+#    def dijsktra(G,s):
+#       d={}
+#       cloud={}
+#       pq=adaptablepq()
+#       pqlocator={}
+#
+#       for i in G.vertices():
+#           if i is s:
+#               d[i]==0
+#           else:
+#               d[i]=float("inf")
+#           pqlocator[i]=pq.add(d[i],i)
+#
+#      while not pq.isEmpty():
+#           key,u=pq.removemin()
+#           cloud[u]=key
+#           del pqlocator[u]
+#           for e in G.incidentedges(u):
+#               v=e.opposite(u)
+#               if v not in cloud:
+#                   if d[u]+e.element()<d[v]:
+#                       d[v]=d[u]+e.element
+#                       pq.update(pqlocator[v],d[v],v)
+#       return cloud
 
-        def __init__(self, x):
-            self._element = x
+#       def shortestpathtree(g,s,d):
+#           tree={}
+#           for u in d:
+#               if u not s:
+#                   for e in g.incidentEdges(u,False):
+#                       if d[u]=e.element+d[e.opposite(u)]:
+#                           tree[u]=e
+#           return tree
 
-        def element(self):
-            return self._element
+#   def primjanik(g):
+#       d={}
+#       pq=adaptablepriorityqueue()
+#       pqlocator={}
+#       tree=[]
+#
+#       for u in g.vertices():
+#           if len(d)==0:
+#               d[u]=0
+#           else:
+#               d[u]=float('inf')
+#           pqlocator[u]=pq.add(d[u],(v,None))
+#
+#       while not pq.isEmpty:
+#           key,value=pq.remove_min()
+#           u,e=value
+#           if edge is not None:
+#               tree.append(e)
+#           del pqlocator[u]
+#
+#           for link in g.incidentEdges(u):
+#               v=link.opposite(u)
+#               if link.element()<d[v]:
+#                   d[v]=link.element
+#                   pq.update(pqlocator[v],d[v],(v,link)
+#       return tree
 
-        def __hash__(self):
-            return hash(id(self))
+#   def kruskal(g):
+#       tree=[]
+#       pq=heappriorityqueue()
+#       forest=partition()
+#       position={}
+#
+#       for v in g.vertices():
+#           position[v]=forest.makegroup(v)
+#
+#       for e in g.edges():
+#           pq.add(e.element,e)
+#
+#       size=g.vertexcount()
+#
+#       while len(tree)!=size -1 and not pq.isEmpty():
+#
+#           weight,edge=pq.removemin()
+#           u,v=edge.enpoints()
+#           a=forest.find(position[u])
+#           b=forest.find(position[v])
+#           if a!b:
+#               tree.append(edge)
+#               forest.union(a,b)
+#
+# return tree
 
-    class Edge:
-        __slots__ = "_origin", "_destination", "_element"
 
-        def __init__(self, u, v, x):
-            self._origin = u
-            self._destination = v
-            self._element = x
+class Vertex:
+    __slots__ = "_element"
 
-        def element(self):
-            return self._element
+    def __init__(self, x):
+        self._element = x
 
-        def endPoints(self):
-            return (self._origin, self._destination)
+    def element(self):
+        return self._element
 
-        def opposite(self, v):
-            return self._origin if v is self._destination else self._origin
+    def __hash__(self):
+        return hash(id(self))
 
-        def __hash__(self):
-            return hash((self._origin, self._destination))
+
+class Edge:
+    __slots__ = "_origin", "_destination", "_element"
+
+    def __init__(self, u, v, x):
+        self._origin = u
+        self._destination = v
+        self._element = x
+
+    def element(self):
+        return self._element
+
+    def endPoints(self):
+        return (self._origin, self._destination)
+
+    def opposite(self, v):
+        return self._origin if v is self._destination else self._origin
+
+    def __hash__(self):
+        return hash((self._origin, self._destination))
